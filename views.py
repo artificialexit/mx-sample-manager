@@ -149,6 +149,22 @@ def projects_samples_add(project_id):
         return redirect(url_for('projects_samples_list', project_id=project_id))
     return dict(form=data, page='Add', submit='Add', project_id=project_id)
 
+@app.route('/projects/<ObjectId:project_id>/samples/edit/<ObjectId:_id>', methods=['GET', 'POST'])
+@templated('projects/samples/form.twig.html')
+def projects_samples_edit(_id, project_id):
+    status, data = samples_form(_id)
+    if status:        
+        flash('Sample <strong>%s</strong> updated' % (data), 'success')
+        return redirect(url_for('projects_samples_list', project_id=project_id))
+    return dict(form=data, page='Edit', submit='Update', project_id=project_id)
+
+@app.route("/projects/<ObjectId:project_id>/samples/delete/<_id>")
+def projects_samples_delete(_id, project_id):
+    sample = db.Sample.get_from_id(ObjectId(_id))
+    flash('Sample <strong>%s</strong> deleted' % (sample.name, ), 'success')
+    sample.delete()
+    return redirect(url_for('projects_samples_list', project_id=project_id))
+
 ## -- Holders -- ##
 @app.route("/holders")
 @templated()

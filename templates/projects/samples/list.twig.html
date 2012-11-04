@@ -28,8 +28,8 @@
                 </td>
                 <!--<td>{{ sample['extra'] }}</td>-->
                 <td>
-                    <a href="{{ url_for('samples_edit', _id=sample['_id'])}}" class="btn btn-small"><i class="icon-edit"></i> Edit</a>
-                    <a href="{{ url_for('samples_delete', _id=sample['_id'])}}" class="btn  btn-small btn-danger"><i class="icon-remove icon-white"></i> Delete</a>                    
+                    <a href="{{ url_for('projects_samples_edit', _id=sample['_id'], project_id=project_id)}}" class="btn btn-small"><i class="icon-edit"></i> Edit</a>
+                    <a href="{{ url_for('projects_samples_delete', _id=sample['_id'], project_id=project_id)}}" class="btn  btn-small btn-danger"><i class="icon-remove icon-white"></i> Delete</a>                    
                 </td>
             </tr>
             {% endfor %}
