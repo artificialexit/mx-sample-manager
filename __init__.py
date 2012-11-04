@@ -22,7 +22,6 @@ def inject_navigation():
         #'index': 'Home',
     })
     navigation['projects_list'] = 'Projects'
-    navigation['samples_list']  = 'Samples'
     navigation['holders_list']  = 'Holders'
 
     return dict(nav=navigation)
