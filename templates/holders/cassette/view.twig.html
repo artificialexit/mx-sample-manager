@@ -1,0 +1,63 @@
+{% extends 'tmpl.twig.html' %}
+{% block content %}
+<h1>View Holder</h1>
+{% include '_alerts.twig.html' %}
+<style type="text/css">
+    .cassette {                
+        background: #ccc;                
+        border-radius: 10px;
+        padding: 10px;
+        display: inline-block;
+    }
+    .pin {
+        background: #999;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        float: left;
+        margin: 5px;
+        text-align: center;
+        line-height: 60px;
+    }
+</style>
+
+
+        <span class="cassette">
+        {% for i in range(96) %}
+            {% set row = (i/12)|round(0, 'floor') %}
+            {% set col = (i%12) + 1 %}
+            {% if not i%12 %}
+                <div style="clear:both;"></div>
+            {% endif %}      
+            <a href="{{ url_for('holders_sample_add', _id=holder._id, pos=i)  if not samples[i] }}" title="{{x}}">
+                <div class="pin" {% if samples[i] %} style="background: #fff;" {% endif %}>{{letters[row]}}{{ col }}</div>
+            </a>
+        {% endfor %}        
+                <div style="clear:both;"></div>
+        </span>
+
+
+
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th scope="col">Position</th>
+            <th scope="col">Sample</th>
+            <th scope="col">Project</th>
+            <th scope="col">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for position, sample in samples.iteritems() %}
+            {% set row = (position/12)|round(0, 'floor') %}
+            {% set col = (position%12) + 1 %}            
+        <tr>
+            <td>{{letters[row]}}{{ col }}</td>
+            <td>{{ sample.name }}</td>            
+            <td>{{ sample.project.name }}</td>    
+            <td><a href="{{ url_for('holders_sample_remove_test', _id=holder._id, pos=position, sample_id=sample._id) }}" class="btn btn-danger btn-mini">&times; Remove</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'tmpl.twig.html' %}
+{% block content %}
+<h1>View Holder</h1>
+{% include '_alerts.twig.html' %}
+<style type="text/css">
+    .puck {
+        background: #ccc;
+        width: {{ puck_size }}px;
+        height: {{ puck_size }}px;
+        border-radius: 50%;
+        position: relative;
+    }            
+    .puck_pin {
+        background: #999;
+        width: {{ width }}px;
+        height: {{ height }}px;
+        border-radius: 50%;
+        position: absolute;
+        text-align: center;
+        line-height: {{ height }}px;
+    }
+</style>
+
+
+<div class="puck">
+    {% for i,x,y in coords %}
+    <a href="{{ url_for('holders_sample_add', _id=holder._id, pos=i) if not samples[i] }}" {% if samples[i] %} title="{{samples[i].name}}"{% endif %}>
+        <div class="puck_pin" style="top: {{ x }}px; left: {{ y }}px;{%
+                if samples[i]
+            %} background: #fff; {% endif %}">
+            {{i+1}}
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<!--<script type="text/javascript">-->
+<!--    $(document).ready(function() {-->
+<!--        $('.puck').tooltip({ selector: "a" })-->
+<!--    });    -->
+<!--</script>-->
+
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th scope="col">Position</th>
+            <th scope="col">Sample</th>
+            <th scope="col">Project</th>
+            <th scope="col">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for position, sample in samples.iteritems() %}
+        <tr>
+            <td>{{ position + 1 }}</td>
+            <td>{{ sample.name }}</td>            
+            <td>{{ sample.project.name }}</td>
+            <td><a href="{{ url_for('holders_sample_remove_test', _id=holder._id, pos=position, sample_id=sample._id) }}" class="btn btn-danger btn-mini">&times; Remove</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'tmpl.twig.html' %}
+{% block content %}
+<h1>Add sample to holder</h1>
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>Sample</th>
+            <th>Project</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sample in samples %}
+        <tr>
+            <td>
+                {{ sample['name'] }}
+            </td>
+            <td>
+                {{ sample['project']['name'] }}
+            </td>            
+            <td>
+                <a href="{{ url_for('holders_sample_add_test', _id=_id, pos=pos, sample_id=sample._id) }}" class="btn btn-primary btn-mini">Select</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

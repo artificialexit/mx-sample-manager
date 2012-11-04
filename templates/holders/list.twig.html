@@ -1,0 +1,27 @@
+{% extends 'tmpl.twig.html' %}
+
+{% block content %}
+    <h1> Holders </h1>
+    {% include '_alerts.twig.html' %}
+    <a href="{{ url_for('holders_add') }}" class="btn btn-primary"><i class="icon-plus icon-white"></i> Add Holder</a>
+    <table id="holders" class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for holder in holders %}
+            <tr>
+                <td>{{ holder['name'] }}</td>
+                <td>{{ holder['type'] }}</td>
+                <td>
+                  <a href="{{ url_for('holders_view', _id=holder['_id'])}}" class="btn btn-small"><i class="icon-th-list"></i> View</a>
+                  <a href="{{ url_for('holders_delete', _id=holder['_id'])}}" class="btn  btn-small btn-danger"><i class="icon-remove icon-white"></i> Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+    </table>
+{% endblock %}
