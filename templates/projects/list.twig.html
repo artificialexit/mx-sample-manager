@@ -1,6 +1,9 @@
 {% extends 'tmpl.twig.html' %}
 
 {% block content %}
+    <style type="text/css">
+      #projects.table tbody tr { cursor: hand; cursor: pointer; }
+    </style>
     <h1> Projects </h1>
     {% include '_alerts.twig.html' %}
     <a href="{{ url_for('projects_add') }}" class="btn btn-primary"><i class="icon-plus icon-white"></i> Add Project</a>
@@ -23,4 +26,14 @@
             {% endfor %}
         </tbody>        
     </table>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#projects tbody tr').click(function() {
+                var href = $(this).find("a").attr("href");
+                if(href) {
+                    window.location = href;
+                }
+            });
+        });
+    </script>
 {% endblock %}
