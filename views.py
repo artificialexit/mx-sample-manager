@@ -40,6 +40,7 @@ def samples_form(_id=None, project_id=None):
     if request.method == 'POST':
         sample.name = form.name.data
         sample.description = form.description.data
+        sample.priority = form.priority.data
         if project_id:
             sample.project = db.Project.get_from_id(project_id)
         else:
@@ -137,6 +138,12 @@ def projects_delete(_id):
 def projects_samples_list(project_id):
     samples=db.Sample.find({'project.$id':project_id})
     project=db.Project.get_from_id(project_id)
+    priority_map = {
+        u'None': '',
+        u'Low': 'label-success',
+        u'Medium': 'label-warning',
+        u'High': 'label-important',
+    }
     return locals()
 
 @app.route('/projects/<ObjectId:project_id>/samples/add', methods=['GET', 'POST'])

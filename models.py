@@ -21,7 +21,7 @@ class Sample(Document):
         'description': unicode,
         'project': Project,
         'holder': ObjectId,
-        'extra': unicode,
+        'priority': IS(u'None', u'Low', u'Medium', u'High'),
     }
     required_fields = ['name', 'project']
 #    default_values = {'creation': datetime.utcnow}
