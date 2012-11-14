@@ -6,6 +6,8 @@ class Project(Document):
     __collection__ = 'projects'
     structure = {
         'name': unicode,
+        'description': unicode,
+        'sequence': unicode,
     }
     required_fields = ['name']
 #    default_values = {'creation': datetime.utcnow}
@@ -16,6 +18,7 @@ class Sample(Document):
     __collection__ = 'samples'
     structure = {
         'name': unicode,
+        'description': unicode,
         'project': Project,
         'holder': ObjectId,
         'extra': unicode,

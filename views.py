@@ -39,6 +39,7 @@ def samples_form(_id=None, project_id=None):
     
     if request.method == 'POST':
         sample.name = form.name.data
+        sample.description = form.description.data
         if project_id:
             sample.project = db.Project.get_from_id(project_id)
         else:
@@ -93,6 +94,8 @@ def projects_form(_id=None):
     form = ProjectForm(request.form, project)
     if request.method == 'POST':
         project.name = request.form['name']
+        project.description = request.form['description']
+        project.sequence = request.form['sequence']
         project.save()
         return (True, project.name)
     return (False, form)

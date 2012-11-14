@@ -4,6 +4,8 @@
     <h1> {{ page }} Project </h1>
     <form method="post">
         {{ render_field(form.name) }}
+        {{ render_field(form.description) }}
+        {{ render_field(form.sequence) }}
         <div class="form-actions">
             <button type="submit"  class="btn btn-primary">{{ submit }}</button>
             <a href="{{ url_for('projects_list') }}">
