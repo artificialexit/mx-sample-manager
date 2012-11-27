@@ -1,0 +1,50 @@
+{% extends 'tmpl.twig.html' %}
+
+{% block content %}
+    <h1>Processing</h1>
+    <table id="projects" class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Sample</th>
+                <th scope="col">EPN</th>
+                <th scope="col">Type</th>
+                <th scope="col">Resolution</th>
+                <th scope="col">Space Group</th>
+                <th scope="col">Unit Cell</th>
+                <th scope="col">No. Frames</th>
+                <th scope="col">Directory</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+{# commented out for knockout testing
+        <tbody>
+            {% for item in results %}
+            <tr>
+                <td>{{ item.sample.name }}</td>
+                <td>{{ item.epn }}</td>
+                <td style="text-transform: capitalize;">{{ item.type }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+#}
+        <tbody data-bind="foreach: results">
+            <tr data-bind="click: view">
+                <td data-bind="text: sample"></td>
+                <td data-bind="text: epn"></td>
+                <td data-bind="text: type" style="text-transform: capitalize;"></td>
+                <td data-bind="text: resolution"></td>
+                <td data-bind="text: space_group"></td>
+                <td data-bind="text: unit_cell"></td>
+                <td data-bind="text: no_frames"></td>
+                <td data-bind="text: directory"></td>
+                <td>
+                    <span data-bind="text: status, css: resultStatus" class="label"></span>
+                </td>
+                
+            </tr>
+        </tbody>
+    </table>
+    
+    <div id="ajax-modal" class="modal hide fade" tabindex="-1"></div>
+    <script src="{{ url_for('static', filename='js/processing.js') }}"></script>
+{% endblock %}

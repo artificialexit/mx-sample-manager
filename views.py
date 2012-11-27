@@ -1,9 +1,10 @@
-from flask import g, request, redirect, url_for, flash, render_template
+from flask import g, request, redirect, url_for, flash, render_template, jsonify
 from . import app, db
 from .utils import templated
 from .forms import SampleForm, ProjectForm, HolderForm
 from mongokit import ObjectId
 from collections import OrderedDict
+from operator import itemgetter
 
 @app.route("/")
 @templated()
@@ -305,3 +306,33 @@ def generate_puck(radius=200):
                round(y+offset, 2)) for i, (x,y) in enumerate(inner + outer)]
     
     return (pin_radius, coords)
+
+## -- PROCESSING -- ##
+@app.route("/processing")
+@templated()
+def processing_list():
+    return dict(results=db.Processing.find())
+
+@app.route("/processing.json")
+def processing_json():
+    items = list(db.Processing.find())
+
+    #strip ids and grab sample names
+    for item in items:
+        item['id'] = str(item['_id'])
+        del item['_id']
+        item['sample'] = item['sample'].name
+
+    # sort on id
+    items = list(reversed(sorted(items, key=itemgetter('id'))))
+
+    return jsonify(results=items)
+
+@app.route("/processing/view/<ObjectId:_id>")
+@templated()
+def processing_view(_id):
+    item=db.Processing.get_from_id(_id)
+    item['id'] = str(item['_id'])
+    del item['_id']
+    item['sample'] = item['sample'].name
+    return dict(item=item, keys=item.keys(), values=item.values())

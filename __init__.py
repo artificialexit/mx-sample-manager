@@ -23,6 +23,7 @@ def inject_navigation():
     })
     navigation['projects_list'] = 'Projects'
     navigation['holders_list']  = 'Holders'
+    navigation['processing_list']  = 'Processing'
 
     return dict(nav=navigation)
 
