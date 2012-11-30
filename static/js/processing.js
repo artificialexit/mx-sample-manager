@@ -35,7 +35,7 @@ $(document).ready(function() {
     };
     
     var reloader = function() {
-       $.getJSON("/processing.json", function(data) {
+       $.getJSON("/processing", function(data) {
             result = ko.mapping.fromJS(data, listMapping, listModel);            
 
             if (!loaded) {

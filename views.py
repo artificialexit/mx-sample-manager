@@ -1,6 +1,6 @@
-from flask import g, request, redirect, url_for, flash, render_template, jsonify
-from . import app, db
-from .utils import templated
+from flask import g, request, redirect, url_for, flash, render_template, json
+from . import app, db, mongo
+from .utils import templated, jsonify, request_wants_json
 from .forms import SampleForm, ProjectForm, HolderForm
 from mongokit import ObjectId
 from collections import OrderedDict
@@ -308,14 +308,19 @@ def generate_puck(radius=200):
     return (pin_radius, coords)
 
 ## -- PROCESSING -- ##
-@app.route("/processing")
+@app.route("/processing", methods=['GET', 'POST'])
 @templated()
 def processing_list():
-    return dict(results=db.Processing.find())
+    if request.method == 'POST':
+        #data = request.json
+        data = json.loads(unicode(request.data))
+        data['sample'] = db.Sample.get_from_id(ObjectId(data['sample']))
+        result = db.Processing(data)
+        result.save()
 
-@app.route("/processing.json")
-def processing_json():
-    items = list(db.Processing.find())
+        return jsonify(**result)
+
+    items = list(db.Processing.find().sort('_id', -1))
 
     #strip ids and grab sample names
     for item in items:
@@ -323,10 +328,32 @@ def processing_json():
         del item['_id']
         item['sample'] = item['sample'].name
 
-    # sort on id
-    items = list(reversed(sorted(items, key=itemgetter('id'))))
+    if request_wants_json():
+        return jsonify(results=items)
 
-    return jsonify(results=items)
+    return {}
+
+@app.route("/processing/<ObjectId:_id>", methods=["GET", "PUT", "PATCH", "DELETE"])
+def processing_obj(_id):
+    if request.method == 'GET':
+        item = db.Processing.get_from_id(_id)
+        return jsonify(**item)
+
+    if request.method == 'PATCH':
+        data = json.loads(unicode(request.data))
+        mongo.db.processing.update({'_id': _id}, {'$set': data})
+
+    if request.method == 'DELETE':
+        mongo.db.processing.remove({'_id':_id})
+
+    if request.method == 'PUT':
+        data = json.loads(unicode(request.data))
+        data['sample'] = db.Sample.get_from_id(ObjectId(data['sample']))
+        result = db.Processing(data)
+        result['_id'] = _id
+        result.save()
+
+    return jsonify(result=True)
 
 @app.route("/processing/view/<ObjectId:_id>")
 @templated()

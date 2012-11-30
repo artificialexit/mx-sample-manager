@@ -1,5 +1,6 @@
 from functools import wraps
-from flask import request, render_template
+from flask import request, render_template, current_app, json
+from bson import json_util
 
 def templated(template=None):
     def decorator(f):
@@ -17,3 +18,14 @@ def templated(template=None):
             return render_template(template_name, **ctx)
         return decorated_function
     return decorator
+
+def jsonify(*args, **kwargs):
+    return current_app.response_class(json.dumps(dict(*args, **kwargs), default=json_util.default),
+                              mimetype='application/json')
+
+def request_wants_json():
+    best = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+
+    return best == 'application/json' and \
+        request.accept_mimetypes[best] > \
+        request.accept_mimetypes['text/html']
