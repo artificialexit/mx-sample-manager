@@ -29,5 +29,8 @@ pip-log.txt
 # komodoedit
 *.komodoproject
 
+# app config
+config.py
+
 # junk
 old
