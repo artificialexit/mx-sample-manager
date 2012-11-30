@@ -1,4 +1,9 @@
 SECRET_KEY = 'development key'
 DEBUG = True
 
-MONGODB_DATABASE = 'testdb'
+# flask-mongokit
+MONGODB_DATABASE = 'mx_sample_manager'
+MONGODB_HOST = '127.0.0.1'
+
+# flask-pymongo
+MONGODB_DBNAME = MONGODB_DATABASE
