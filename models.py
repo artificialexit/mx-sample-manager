@@ -28,6 +28,7 @@ class Sample(Document):
     use_dot_notation = True
     use_schemaless = True
     use_autorefs = True
+    force_autorefs_current_db = True
 
 class Holder(Document):
     __collection__ = 'holders'
@@ -43,6 +44,7 @@ class Holder(Document):
     use_dot_notation = True
     use_schemaless = True
     use_autorefs = True
+    force_autorefs_current_db = True
 
 class Processing(Document):
     __collection__ = 'processing'
@@ -65,6 +67,7 @@ class Processing(Document):
     use_dot_notation = True
     use_schemaless = True
     use_autorefs = True
+    force_autorefs_current_db = True
 
 
 db.register([Sample, Project, Holder, Processing])
