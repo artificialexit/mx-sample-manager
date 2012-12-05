@@ -5,6 +5,8 @@ from .forms import SampleForm, ProjectForm, HolderForm
 from mongokit import ObjectId
 from collections import OrderedDict
 from operator import itemgetter
+from bson import json_util
+import time
 
 @app.route("/")
 @templated()
@@ -312,31 +314,22 @@ def generate_puck(radius=200):
 @templated()
 def processing_list():
     if request.method == 'POST':
-        #data = request.json
-        data = json.loads(unicode(request.data))
-        data['sample'] = db.Sample.get_from_id(ObjectId(data['sample']))
-        result = db.Processing(data)
-        result.save()
-
-        return jsonify(**result)
-
-    items = list(db.Processing.find().sort('_id', -1))
-
-    #strip ids and grab sample names
-    for item in items:
-        item['id'] = str(item['_id'])
-        del item['_id']
-        item['sample'] = item['sample'].name
+        data = json.loads(unicode(request.data), object_hook=json_util.object_hook)
+        _id = mongo.db.processing.insert(data)
+        return jsonify(_id=ObjectId(_id))
 
     if request_wants_json():
+        items = list(mongo.db.processing.find().sort('_id', -1))
         return jsonify(results=items)
 
+    # for the page generation we return nothing
+    # on load a json request will build the table
     return {}
 
 @app.route("/processing/<ObjectId:_id>", methods=["GET", "PUT", "PATCH", "DELETE"])
 def processing_obj(_id):
     if request.method == 'GET':
-        item = db.Processing.get_from_id(_id)
+        item = mongo.db.processing.find_one({'_id':_id})
         return jsonify(**item)
 
     if request.method == 'PATCH':
@@ -347,19 +340,14 @@ def processing_obj(_id):
         mongo.db.processing.remove({'_id':_id})
 
     if request.method == 'PUT':
-        data = json.loads(unicode(request.data))
-        data['sample'] = db.Sample.get_from_id(ObjectId(data['sample']))
-        result = db.Processing(data)
-        result['_id'] = _id
-        result.save()
+        data = json.loads(unicode(request.data), object_hook=json_util.object_hook)
+        mongo.db.processing.update({'_id': _id}, data, upsert=True)
 
     return jsonify(result=True)
 
 @app.route("/processing/view/<ObjectId:_id>")
 @templated()
 def processing_view(_id):
-    item=db.Processing.get_from_id(_id)
-    item['id'] = str(item['_id'])
-    del item['_id']
-    item['sample'] = item['sample'].name
+    item = mongo.db.processing.find_one({'_id':_id})
+    item['sample'] = item['sample']['name']
     return dict(item=item, keys=item.keys(), values=item.values())

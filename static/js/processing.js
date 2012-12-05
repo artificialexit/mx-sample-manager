@@ -14,6 +14,10 @@ $(document).ready(function() {
             return this.success() ? "label-success" : "label-important";
         }, this);
         
+        this.id = function() {
+            return this._id.$oid();
+        }
+
         this.view =  function() {
             $('body').modalmanager('loading');
             
