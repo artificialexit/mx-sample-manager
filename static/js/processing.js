@@ -30,7 +30,7 @@ $(document).ready(function() {
     var listMapping = {
         'results': {
             key: function(data) {
-                return ko.utils.unwrapObservable(data.id);
+                return ko.utils.unwrapObservable(data._id.$oid);
             },
             create: function(options) {
                 return new resultModel(options.data);
