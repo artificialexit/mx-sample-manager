@@ -9,11 +9,18 @@ from bson import json_util
 import time
 import redis
 
+def get_real_ip():
+    if not request.headers.getlist("X-Forwarded-For"):
+        return request.remote_addr
+    else:
+        return request.headers.getlist("X-Forwarded-For")[0]
+
 # taken from userchange
 def from_beamline():
     """Quick check on which beamline request is coming from"""
     config = {'109':'MX1', '108':'MX2'}
-    octets = request.remote_addr.strip().split(".")
+
+    octets = get_real_ip().strip().split(".")
 
     if octets[0] == '10':
         return config[octets[1]]
