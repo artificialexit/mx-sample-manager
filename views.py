@@ -7,6 +7,25 @@ from collections import OrderedDict
 from operator import itemgetter
 from bson import json_util
 import time
+import redis
+
+# taken from userchange
+def from_beamline():
+    """Quick check on which beamline request is coming from"""
+    config = {'109':'MX1', '108':'MX2'}
+    octets = request.remote_addr.strip().split(".")
+
+    if octets[0] == '10':
+        return config[octets[1]]
+
+redisclient = {'MX1':redis.StrictRedis('10.109.24.2'),
+               'MX2':redis.StrictRedis('10.108.24.2')}
+# get epn
+def get_epn():
+    try:
+        return redisclient[from_beamline()].get('CURRENT_EPN')
+    except KeyError:
+        return
 
 @app.route("/")
 @templated()
@@ -319,7 +338,11 @@ def processing_list():
         return jsonify(_id=ObjectId(_id))
 
     if request_wants_json():
-        items = list(mongo.db.processing.find().sort('_id', -1))
+        query = {}
+        if from_beamline():
+            query['epn'] = get_epn()
+
+        items = list(mongo.db.processing.find(query).sort('_id', -1))
         return jsonify(results=items)
 
     # for the page generation we return nothing
