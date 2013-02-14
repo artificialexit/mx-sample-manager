@@ -18,22 +18,34 @@
         position: absolute;
         text-align: center;
         line-height: {{ height }}px;
+        cursor: hand; cursor: pointer;
     }
 </style>
 
 
 <div class="puck">
     {% for i,x,y in coords %}
-    <a href="{{ url_for('holders_sample_add', _id=holder._id, pos=i) if not samples[i] }}" {% if samples[i] %} title="{{samples[i].name}}"{% endif %}>
-        <div class="puck_pin" style="top: {{ x }}px; left: {{ y }}px;{%
+    <div class="puck_pin" style="top: {{ x }}px; left: {{ y }}px;{%
                 if samples[i]
             %} background: #fff; {% endif %}">
+        <a href="{{ url_for('holders_sample_add', _id=holder._id, pos=i) if not samples[i] }}#" {% if samples[i] %} title="{{samples[i].name}}"{% endif %}>
             {{i+1}}
-        </div>
-    </a>
+        </a>
+    </div>
     {% endfor %}
 </div>
 
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('.puck_pin').click(function() {
+        var href = $(this).find("a").attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+});
+</script>
 <!--<script type="text/javascript">-->
 <!--    $(document).ready(function() {-->
 <!--        $('.puck').tooltip({ selector: "a" })-->
