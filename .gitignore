@@ -34,3 +34,6 @@ config.py
 
 # junk
 old
+
+# fabric
+fabfile.py
