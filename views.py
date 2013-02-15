@@ -350,9 +350,6 @@ def processing_list():
         if from_beamline():
             query['epn'] = get_epn()
         
-        # hack fix for debuggin
-        query['epn'] = '5877a'
-
         items = list(mongo.db.processing.find(query).sort('_id', -1))
         return jsonify(results=items)
 
