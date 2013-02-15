@@ -6,6 +6,7 @@ from mongokit import ObjectId
 from collections import OrderedDict
 from operator import itemgetter
 from bson import json_util
+from jinja2.exceptions import TemplateNotFound
 import time
 import redis
 
@@ -348,6 +349,9 @@ def processing_list():
         query = {}
         if from_beamline():
             query['epn'] = get_epn()
+        
+        # hack fix for debuggin
+        query['epn'] = '5877a'
 
         items = list(mongo.db.processing.find(query).sort('_id', -1))
         return jsonify(results=items)
@@ -380,4 +384,20 @@ def processing_obj(_id):
 def processing_view(_id):
     item = mongo.db.processing.find_one({'_id':_id})
     item['sample'] = item['sample']['name']
-    return dict(item=item, keys=item.keys(), values=item.values())
+    
+    context = dict(item=item, keys=item.keys(), values=item.values())
+    context['field_other'] = ['epn', 'status', 'sample', 'directory', 'no_frames', 'resolution', 'space_group', 'unit_cell']
+        
+    if str(item['type']) == 'dataset':
+        context['field_order'] = sorted([key for key,value in item.iteritems() if isinstance(value, list) and len(value) <= 3])
+        context['field_other'].append('average_mosaicity')
+    if str(item['type']) == 'indexing':
+        context['field_other'].extend(['mosaicity', 'indexing_refined_rmsd'])
+    
+    template = 'processing/view_%s.twig.html' % str(item['type'])
+    print [template]
+    try:
+        return render_template(template, **context)
+    except TemplateNotFound:
+        print "Failed to find template for %s" % (template, )
+        return context

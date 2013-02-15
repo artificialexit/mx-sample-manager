@@ -1,0 +1,41 @@
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>{{ item.sample }} - {{ item.type }}</h3>
+  </div>
+<div class="modal-body">
+  <table class="table table-condensed">
+    <tbody>
+    {% for key in field_other -%}
+      <tr>
+        <td style="text-transform: capitalize;">{{ key|replace('_', ' ') }}</td>
+        <td>{{ item[key] }}</td>
+      </tr>
+    {%- endfor %}
+    </tbody>
+  </table>
+  <table class="table table-condensed table-bordered">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Overall</th>
+        <th>High</th>
+        <th>Low</th>
+      </tr>
+    </thead>
+    <tbody>
+   {% for key in field_order -%}
+      <tr>
+        <td style="text-transform: capitalize;">{{ key|replace('_', ' ') }}</td>
+        <td>{{ item[key][0] }}</td>
+        <td>{{ item[key][1] }}</td>
+        <td>{{ item[key][2] }}</td>
+      <tr>
+    {%- endfor %}
+   </tbody>
+  </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn">Close</button>
+  </div>
+</div> 
+  
