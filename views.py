@@ -383,7 +383,7 @@ def processing_view(_id):
     item['sample'] = item['sample']['name']
     
     context = dict(item=item, keys=item.keys(), values=item.values())
-    context['field_other'] = ['epn', 'status', 'sample', 'directory', 'no_frames', 'resolution', 'space_group', 'unit_cell']
+    context['field_other'] = ['epn', 'status', 'sample', 'directory', 'no_frames', 'last_frame', 'resolution', 'space_group', 'unit_cell']
         
     if str(item['type']) == 'dataset':
         context['field_order'] = sorted([key for key,value in item.iteritems() if isinstance(value, list) and len(value) <= 3])
