@@ -13,6 +13,7 @@
     {%- endfor %}
     </tbody>
   </table>
+  {% if field_order -%}
   <table class="table table-condensed table-bordered">
     <thead>
       <tr>
@@ -33,6 +34,7 @@
     {%- endfor %}
    </tbody>
   </table>
+  {%- endif %}
   </div>
   <div class="modal-footer">
     <button type="button" data-dismiss="modal" class="btn">Close</button>
