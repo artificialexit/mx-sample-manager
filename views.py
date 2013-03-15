@@ -349,8 +349,12 @@ def processing_list():
         query = {}
         if from_beamline():
             query['epn'] = get_epn()
+
+        cursor = mongo.db.processing.find(query).sort('_id', -1)
+        if not query:
+            cursor.limit(50)
         
-        items = list(mongo.db.processing.find(query).sort('_id', -1))
+        items = list(cursor)
         return jsonify(results=items)
 
     # for the page generation we return nothing
