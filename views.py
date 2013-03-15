@@ -386,7 +386,9 @@ def processing_view(_id):
     context['field_other'] = ['epn', 'status', 'sample', 'directory', 'no_frames', 'last_frame', 'resolution', 'space_group', 'unit_cell']
         
     if str(item['type']) == 'dataset':
-        context['field_order'] = sorted([key for key,value in item.iteritems() if isinstance(value, list) and len(value) <= 3])
+        context['field_order'] = ['low_resolution_limit','high_resolution_limit', 'completeness', 'multiplicity']
+        context['field_order'].extend(sorted([key for key,value in item.iteritems()
+                                              if key not in context['field_order'] and isinstance(value, list) and len(value) <= 3]))
         context['field_other'].append('average_mosaicity')
     if str(item['type']) == 'indexing':
         context['field_other'].extend(['mosaicity', 'indexing_refined_rmsd'])
