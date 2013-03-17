@@ -1,5 +1,6 @@
 import os
 import collections
+from pytz import timezone
 
 from flask import Flask, send_from_directory, render_template
 from flask.ext.mongokit import MongoKit
@@ -12,6 +13,7 @@ app.config.from_object(config)
 
 db = MongoKit(app)
 mongo = PyMongo(app, config_prefix='MONGODB')
+localtime = timezone("Australia/Melbourne")
 
 @app.route('/favicon.ico')
 def favicon():

@@ -1,5 +1,5 @@
 from flask import g, request, redirect, url_for, flash, render_template, json
-from . import app, db, mongo
+from . import app, db, mongo, localtime
 from .utils import templated, jsonify, request_wants_json
 from .forms import SampleForm, ProjectForm, HolderForm
 from mongokit import ObjectId
@@ -384,10 +384,12 @@ def processing_obj(_id):
 @templated()
 def processing_view(_id):
     item = mongo.db.processing.find_one({'_id':_id})
+    started_at = localtime.normalize(_id.generation_time.astimezone(localtime))
+    item['started_at'] = started_at.strftime('%Y-%m-%d %H:%M:%S %Z')
     item['sample'] = item['sample']['name']
     
     context = dict(item=item, keys=item.keys(), values=item.values())
-    context['field_other'] = ['epn', 'status', 'sample', 'directory', 'no_frames', 'last_frame', 'resolution', 'space_group', 'unit_cell']
+    context['field_other'] = ['epn', 'started_at', 'status', 'sample', 'directory', 'no_frames', 'last_frame', 'resolution', 'space_group', 'unit_cell']
         
     if str(item['type']) == 'dataset':
         context['field_order'] = [f for f in ['low_resolution_limit','high_resolution_limit', 'completeness', 'i/sigma', 'rmerge', 'rpim(i)', 'multiplicity'] if f in item.keys()]
