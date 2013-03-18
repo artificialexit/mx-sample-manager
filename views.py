@@ -23,8 +23,11 @@ def from_beamline():
 
     octets = get_real_ip().strip().split(".")
 
-    if octets[0] == '10':
-        return config[octets[1]]
+    try:
+        if octets[0] == '10':
+            return config[octets[1]]
+    except KeyError:
+        pass
 
 redisclient = {'MX1':redis.StrictRedis('10.109.24.2'),
                'MX2':redis.StrictRedis('10.108.24.2')}
