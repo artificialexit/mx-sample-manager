@@ -2,7 +2,7 @@ import os
 import collections
 from pytz import timezone
 
-from flask import Flask, send_from_directory, render_template
+from flask import Flask, send_from_directory, render_template, redirect, url_for
 from flask.ext.mongokit import MongoKit
 from flask.ext.pymongo import PyMongo
 
@@ -26,3 +26,7 @@ def inject_navigation():
 
 from . import models
 from . import views
+
+@app.route("/")
+def index():
+    return redirect(url_for(app.config['INDEX_ENDPOINT']))

@@ -13,3 +13,6 @@ MONGODB_DBNAME = MONGODB_DATABASE
 # navigation
 NAVIGATION = collections.OrderedDict()
 NAVIGATION['processing_list']  = 'Processing'
+
+# index redirect
+INDEX_ENDPOINT = 'processing_list'

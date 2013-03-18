@@ -38,16 +38,6 @@ def get_epn():
     except KeyError:
         return
 
-@app.route("/")
-@templated()
-def index():
-    return dict()
-
-@app.route("/test")
-@templated()
-def test():
-    return dict()
-
 ## -- SAMPLES -- ##
 @app.route("/samples")
 @templated()
