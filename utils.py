@@ -29,3 +29,11 @@ def request_wants_json():
     return best == 'application/json' and \
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
+    
+def register_api(app, view, endpoint, pk='_id', pk_type='ObjectId'):
+    view_func = view.as_view(endpoint)
+    app.add_url_rule("/%s" % endpoint, '%s_list' % endpoint, defaults={pk: None},
+                     view_func=view_func, methods=['GET',])
+    app.add_url_rule("/%s" % endpoint, view_func=view_func, methods=['POST',])
+    app.add_url_rule('/%s/<%s:%s>' % (endpoint, pk_type, pk), view_func=view_func,
+                     methods=['GET', 'PUT', 'PATCH', 'DELETE'])

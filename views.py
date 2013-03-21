@@ -340,48 +340,59 @@ def generate_puck(radius=200):
     return (pin_radius, coords)
 
 ## -- PROCESSING -- ##
-@app.route("/processing", methods=['GET', 'POST'])
-@templated()
-def processing_list():
-    if request.method == 'POST':
-        data = json.loads(unicode(request.data), object_hook=json_util.object_hook)
-        _id = mongo.db.processing.insert(data)
-        return jsonify(_id=ObjectId(_id))
+from flask.views import MethodView
+from utils import register_api
 
-    if request_wants_json():
-        query = {}
-        if from_beamline():
-            query['epn'] = get_epn()
+class ProcessingAPI(MethodView):
+    decorators = [templated()]
 
-        cursor = mongo.db.processing.find(query).sort('_id', -1)
-        if not query:
-            cursor.limit(50)
-        
-        items = list(cursor)
-        return jsonify(results=items)
+    def get(self, _id=None):
+        if _id:
+            return self.get_one(_id)
+        else:
+            filters = {'epn':  request.args.get('epn', get_epn()),
+                       'type': request.args.get('type')}
 
-    # for the page generation we return nothing
-    # on load a json request will build the table
-    return {}
+            filters = {k:v for k,v in filters.iteritems() if v}
+            return self.get_list(filters)
 
-@app.route("/processing/<ObjectId:_id>", methods=["GET", "PUT", "PATCH", "DELETE"])
-def processing_obj(_id):
-    if request.method == 'GET':
+    def get_list(self, filters=None):
+        if request_wants_json():
+            query = filters if filters else {}
+
+            cursor = mongo.db.processing.find(query).sort('_id', -1)
+
+            if not query.get('epn'):
+                cursor.limit(50)
+
+            return jsonify(results=list(cursor))
+        return {}
+
+    def _load_data(self):
+        return json.loads(unicode(request.data),
+                          object_hook=json_util.object_hook)
+
+    def get_one(self, _id):
         item = mongo.db.processing.find_one({'_id':_id})
         return jsonify(**item)
 
-    if request.method == 'PATCH':
-        data = json.loads(unicode(request.data))
-        mongo.db.processing.update({'_id': _id}, {'$set': data})
+    def patch(self, _id):
+        mongo.db.processing.update({'_id': _id}, {'$set': self._load_data()})
+        return jsonify(result=True)
 
-    if request.method == 'DELETE':
+    def delete(self, _id):
         mongo.db.processing.remove({'_id':_id})
+        return jsonify(result=True)
 
-    if request.method == 'PUT':
-        data = json.loads(unicode(request.data), object_hook=json_util.object_hook)
-        mongo.db.processing.update({'_id': _id}, data, upsert=True)
+    def put(self, _id):
+        mongo.db.processing.update({'_id': _id}, self._load_data(), upsert=True)
+        return jsonify(result=True)
 
-    return jsonify(result=True)
+    def post(self):
+        _id = mongo.db.processing.insert(self._load_data())
+        return jsonify(_id=ObjectId(_id))
+
+register_api(app, ProcessingAPI, 'processing')
 
 @app.route("/processing/view/<ObjectId:_id>")
 @templated()
