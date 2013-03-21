@@ -48,7 +48,7 @@ $(document).ready(function() {
                 loaded = true;                
             }
         
-            setTimeout(reloader, 750);
+            setTimeout(reloader, 2500);
        });
     };
     
