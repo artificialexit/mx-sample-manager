@@ -39,7 +39,7 @@ $(document).ready(function() {
     };
     
     var reloader = function() {
-       $.getJSON("/processing", function(data) {
+       $.getJSON(window.location, function(data) {
             result = ko.mapping.fromJS(data, listMapping, listModel);            
 
             if (!loaded) {
