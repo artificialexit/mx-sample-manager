@@ -349,12 +349,12 @@ def processing_list():
         return jsonify(_id=ObjectId(_id))
 
     if request_wants_json():
-        query = {}
-        if from_beamline():
-            query['epn'] = get_epn()
+        query = {'epn':  request.args.get('epn', get_epn()),
+                 'type': request.args.get('type')}
+        query = {k:v for k,v in query.iteritems() if v}
 
         cursor = mongo.db.processing.find(query).sort('_id', -1)
-        if not query:
+        if not query.get('epn'):
             cursor.limit(50)
         
         items = list(cursor)
