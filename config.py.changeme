@@ -1,3 +1,5 @@
+import collections
+
 SECRET_KEY = 'development key'
 DEBUG = True
 
@@ -7,3 +9,7 @@ MONGODB_HOST = '127.0.0.1'
 
 # flask-pymongo
 MONGODB_DBNAME = MONGODB_DATABASE
+
+# navigation
+NAVIGATION = collections.OrderedDict()
+NAVIGATION['processing_list']  = 'Processing'

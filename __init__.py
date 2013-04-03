@@ -22,14 +22,7 @@ def favicon():
 
 @app.context_processor
 def inject_navigation():
-    navigation = collections.OrderedDict({
-        #'index': 'Home',
-    })
-    navigation['projects_list'] = 'Projects'
-    navigation['holders_list']  = 'Holders'
-    navigation['processing_list']  = 'Processing'
-
-    return dict(nav=navigation)
+    return dict(nav=app.config['NAVIGATION'])
 
 from . import models
 from . import views
