@@ -24,6 +24,10 @@ def favicon():
 def inject_navigation():
     return dict(nav=app.config['NAVIGATION'])
 
+@app.context_processor
+def inject_title():
+    return dict(title=app.config.get('TITLE'))
+
 from . import models
 from . import views
 
