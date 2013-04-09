@@ -11,6 +11,9 @@ from . import config
 app = Flask(__name__)
 app.config.from_object(config)
 
+from .reversed import ReverseProxied
+app.wsgi_app = ReverseProxied(app.wsgi_app)
+
 db = MongoKit(app)
 mongo = PyMongo(app, config_prefix='MONGODB')
 localtime = timezone("Australia/Melbourne")
