@@ -344,9 +344,13 @@ def processing_list():
         query = {k:v for k,v in query.iteritems() if v}
 
         cursor = mongo.db.processing.find(query).sort('_id', -1)
-        if not query.get('epn'):
+
+        limit = request.args.get('limit')
+        if limit:
+            cursor.limit(int(limit))
+        elif not query.get('epn'):
             cursor.limit(50)
-        
+
         items = list(cursor)
         return jsonify(results=items)
 
