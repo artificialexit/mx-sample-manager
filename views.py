@@ -1,5 +1,5 @@
 from flask import g, request, redirect, url_for, flash, render_template, json
-from . import app, db, mongo, localtime
+from . import app, db, mongo, localtime, vbl
 from .utils import templated, jsonify, request_wants_json
 from .forms import SampleForm, ProjectForm, HolderForm
 from mongokit import ObjectId
@@ -330,6 +330,12 @@ def generate_puck(radius=200):
     return (pin_radius, coords)
 
 ## -- PROCESSING -- ##
+@app.route("/processing/epns")
+@vbl.requires_auth
+@templated()
+def processing_epns():
+    return {}
+
 @app.route("/processing", methods=['GET', 'POST'])
 @templated()
 def processing_list():
