@@ -1,14 +1,10 @@
-from flask import g, request, redirect, url_for, flash, render_template, json
-from . import app, db, mongo, localtime, vbl
-from .utils import templated, jsonify, request_wants_json
-from .forms import SampleForm, ProjectForm, HolderForm
-from mongokit import ObjectId
+from flask import request, flash, redirect, url_for, render_template
 from collections import OrderedDict
-from operator import itemgetter
-from bson import json_util
-from jinja2.exceptions import TemplateNotFound
-import time
-import redis
+
+from .. import app
+from ..plugins import db
+from ..utils import templated
+from ..forms import HolderForm
 
 ## -- Holders -- ##
 @app.route("/holders")
@@ -108,9 +104,6 @@ def holders_delete(_id):
     flash('Holder <strong>%s</strong> deleted' % (holder.name, ), 'success')
     holder.delete()
     return redirect(url_for('holders_list'))
-
-
-
 
 ## stuff for puck
 def generate_xy(radius, count):
