@@ -10,34 +10,6 @@ from jinja2.exceptions import TemplateNotFound
 import time
 import redis
 
-def get_real_ip():
-    if not request.headers.getlist("X-Forwarded-For"):
-        return request.remote_addr
-    else:
-        return request.headers.getlist("X-Forwarded-For")[0]
-
-# taken from userchange
-def from_beamline():
-    """Quick check on which beamline request is coming from"""
-    config = {'109':'MX1', '108':'MX2'}
-
-    octets = get_real_ip().strip().split(".")
-
-    try:
-        if octets[0] == '10':
-            return config[octets[1]]
-    except KeyError:
-        pass
-
-redisclient = {'MX1':redis.StrictRedis('10.109.24.2'),
-               'MX2':redis.StrictRedis('10.108.24.2')}
-# get epn
-def get_epn():
-    try:
-        return redisclient[from_beamline()].get('CURRENT_EPN')
-    except KeyError:
-        return
-
 ## -- SAMPLES -- ##
 @app.route("/samples")
 @templated()
