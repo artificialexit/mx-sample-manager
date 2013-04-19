@@ -22,7 +22,7 @@
                 </td>
                 <td>
                     {% if sample['holder'] %}
-                    <a href="{{ url_for('holders_view', _id=sample['holder']) }}" class="btn btn-small">
+                    <a href="{{ url_for('holders.view', _id=sample['holder']) }}" class="btn btn-small">
                         View
                     </a>
                     {% else %}

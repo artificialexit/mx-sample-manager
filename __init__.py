@@ -33,9 +33,10 @@ def inject_title():
     return dict(title=app.config.get('TITLE'))
 
 from . import models
-from .holders import views
+from .holders.views import holders
 from .projects.views import projects
 from .processing.views import processing
+app.register_blueprint(holders)
 app.register_blueprint(projects)
 app.register_blueprint(processing)
 

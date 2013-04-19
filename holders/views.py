@@ -1,21 +1,23 @@
-from flask import request, flash, redirect, url_for, render_template
+from flask import Blueprint, current_app, request, flash, redirect, url_for, render_template
 from collections import OrderedDict
 
-from .. import app
 from ..plugins import db
 from ..utils import templated
 from ..forms import HolderForm
 
 
-@app.route("/holders")
+holders = Blueprint('holders', __name__, url_prefix='/holders')
+
+
+@holders.route("")
 @templated()
-def holders_list():
+def index():
     return dict(holders=db.Holder.find())
 
 
-@app.route('/holders/add', methods=['GET', 'POST'])
+@holders.route('/add', methods=['GET', 'POST'])
 @templated('holders/form.twig.html')
-def holders_add():
+def add():
     form = HolderForm(request.form)
     if request.method == 'POST':
         holder = db.Holder()
@@ -23,12 +25,12 @@ def holders_add():
         holder.type = form.type.data
         holder.save()
         flash('Holder <strong>%s</strong> added' % (holder.name, ), 'success')
-        return redirect(url_for('holders_list'))
+        return redirect(url_for('.list'))
     return dict(form=form, page='Add', submit='Add')
 
 
-@app.route('/holders/view/<ObjectId:_id>')
-def holders_view(_id):
+@holders.route('/view/<ObjectId:_id>')
+def view(_id):
     from operator import itemgetter
 
     holder = db.Holder.get_from_id(_id)
@@ -63,19 +65,19 @@ def holders_view_cassette(**context):
     return render_template('holders/cassette/view.twig.html', **context)
 
 
-@app.route('/holders/<ObjectId:_id>/sample/add/<pos>')
+@holders.route('/<ObjectId:_id>/sample/add/<pos>')
 @templated()
-def holders_sample_add(_id, pos):
+def sample_add(_id, pos):
     samples = db.Sample.find({'holder': None})
     if not samples.count() > 0:
         flash('No Samples', 'error')
-        return redirect(url_for('holders_view', _id=_id))
-    app.logger.info([_id])
+        return redirect(url_for('.view', _id=_id))
+    current_app.logger.info([_id])
     return dict(_id=_id, pos=pos, samples=samples)
 
 
-@app.route('/holders/<ObjectId:_id>/sample/add/<pos>/<ObjectId:sample_id>')
-def holders_sample_add_test(_id, pos, sample_id):
+@holders.route('/<ObjectId:_id>/sample/add/<pos>/<ObjectId:sample_id>')
+def sample_add_test(_id, pos, sample_id):
     holder = db.Holder.get_from_id(_id)
     sample = db.Sample.get_from_id(sample_id)
 
@@ -87,11 +89,11 @@ def holders_sample_add_test(_id, pos, sample_id):
 
     holder.save()
     sample.save()
-    return redirect(url_for('holders_view', _id=_id))
+    return redirect(url_for('.view', _id=_id))
 
 
-@app.route('/holders/<ObjectId:_id>/sample/remove/<pos>/<ObjectId:sample_id>')
-def holders_sample_remove_test(_id, pos, sample_id):
+@holders.route('/<ObjectId:_id>/sample/remove/<pos>/<ObjectId:sample_id>')
+def sample_remove_test(_id, pos, sample_id):
     holder = db.Holder.get_from_id(_id)
 
     for item in holder.samples:
@@ -103,15 +105,15 @@ def holders_sample_remove_test(_id, pos, sample_id):
         holder.save()
         item['sample'].save()
 
-    return redirect(url_for('holders_view', _id=_id))
+    return redirect(url_for('.view', _id=_id))
 
 
-@app.route("/holders/delete/<ObjectId:_id>")
-def holders_delete(_id):
+@holders.route("/delete/<ObjectId:_id>")
+def delete(_id):
     holder = db.Holder.get_from_id(_id)
     flash('Holder <strong>%s</strong> deleted' % (holder.name, ), 'success')
     holder.delete()
-    return redirect(url_for('holders_list'))
+    return redirect(url_for('.list'))
 
 
 def generate_xy(radius, count):
