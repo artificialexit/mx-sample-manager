@@ -32,13 +32,17 @@ def inject_navigation():
 def inject_title():
     return dict(title=app.config.get('TITLE'))
 
-from . import models
 from .holders.views import holders
 from .projects.views import projects
 from .processing.views import processing
 app.register_blueprint(holders)
 app.register_blueprint(projects)
 app.register_blueprint(processing)
+
+from .projects.models import Project, Sample
+from .holders.models import Holder
+from .processing.models import Processing
+db.register([Sample, Project, Holder, Processing])
 
 @app.route("/")
 def index():
