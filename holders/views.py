@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 from ..plugins import db
 from ..utils import templated
-from ..forms import HolderForm
+from forms import HolderForm
 
 
 holders = Blueprint('holders', __name__, url_prefix='/holders')

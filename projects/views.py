@@ -3,7 +3,7 @@ from bson import ObjectId
 
 from ..plugins import db
 from ..utils import templated
-from ..forms import SampleForm, ProjectForm
+from forms import SampleForm, ProjectForm
 
 
 projects = Blueprint('projects', __name__, url_prefix='/projects')
