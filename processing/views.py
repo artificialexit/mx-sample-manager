@@ -1,22 +1,25 @@
-from flask import request, json, render_template
+from flask import Blueprint, request, json, render_template
 from jinja2.exceptions import TemplateNotFound
 from bson import ObjectId, json_util
 
-from .. import app, localtime
+from .. import localtime
 from ..plugins import mongo, vbl, beamline
 from ..utils import templated, jsonify, request_wants_json
 
 
-@app.route("/processing/epns")
+processing = Blueprint('processing', __name__, url_prefix='/processing')
+
+
+@processing.route("/epns")
 @vbl.requires_auth
 @templated()
-def processing_epns():
+def epns():
     return {}
 
 
-@app.route("/processing", methods=['GET', 'POST'])
+@processing.route("", methods=['GET', 'POST'])
 @templated()
-def processing_list():
+def index():
     if request.method == 'POST':
         data = json.loads(unicode(request.data), object_hook=json_util.object_hook)
         _id = mongo.db.processing.insert(data)
@@ -43,8 +46,8 @@ def processing_list():
     return {}
 
 
-@app.route("/processing/<ObjectId:_id>", methods=["GET", "PUT", "PATCH", "DELETE"])
-def processing_obj(_id):
+@processing.route("/<ObjectId:_id>", methods=["GET", "PUT", "PATCH", "DELETE"])
+def obj(_id):
     if request.method == 'GET':
         item = mongo.db.processing.find_one({'_id': _id})
         return jsonify(**item)
@@ -63,9 +66,9 @@ def processing_obj(_id):
     return jsonify(result=True)
 
 
-@app.route("/processing/view/<ObjectId:_id>")
+@processing.route("/view/<ObjectId:_id>")
 @templated()
-def processing_view(_id):
+def view(_id):
     item = mongo.db.processing.find_one({'_id': _id})
     started_at = localtime.normalize(_id.generation_time.astimezone(localtime))
     item['started_at'] = started_at.strftime('%Y-%m-%d %H:%M:%S %Z')

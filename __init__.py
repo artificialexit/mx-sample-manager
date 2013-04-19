@@ -34,7 +34,8 @@ def inject_title():
 
 from . import models
 from . import views
-from .processing import views
+from .processing.views import processing
+app.register_blueprint(processing)
 
 @app.route("/")
 def index():
