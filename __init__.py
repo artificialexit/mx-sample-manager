@@ -34,6 +34,7 @@ def inject_title():
 
 from . import models
 from . import views
+from .processing import views
 
 @app.route("/")
 def index():
