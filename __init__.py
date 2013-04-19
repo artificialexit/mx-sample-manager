@@ -34,6 +34,7 @@ def inject_title():
 
 from . import models
 from . import views
+from .projects import views
 from .processing.views import processing
 app.register_blueprint(processing)
 
