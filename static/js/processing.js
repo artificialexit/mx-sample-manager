@@ -57,12 +57,12 @@ $(document).ready(function() {
     
     var reloader = function() {
        $.getJSON(window.location, function(data) {
-            $.each(data.results, function(index, value){
+            $.each(data.results.reverse(), function(index, value){
                 _id = value._id.$oid
                 if (resultMap.hasOwnProperty(_id)) {
                     resultMap[_id].update(value);
                 } else {
-                    pageViewModel.results.push(new resultViewModel(value))
+                    pageViewModel.results.unshift(new resultViewModel(value))
                 }
             });          
 
