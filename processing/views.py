@@ -92,3 +92,23 @@ def view(_id):
     except TemplateNotFound:
         print "Failed to find template for %s" % (template, )
         return context
+
+@processing.route("/retrigger/<ObjectId:_id>")
+@templated()
+def retrigger(_id):
+    item = mongo.db.processing.find_one({'_id':_id})
+    item['sample'] = item['sample']['name']
+
+    context = dict(item=item)
+    return context
+
+from rq import Queue
+
+@processing.route("/retrigger/submit", methods=['POST'])
+def retrigger_submit():
+    r = beamline.redis[beamline.current]
+    q = Queue('default', connection=r)
+    q.enqueue_call(func='jobs.testing.dataset',
+                   kwargs=request.form.to_dict(flat=True),
+                   timeout=1800)
+    return jsonify(result=request.form['dataset_id'])

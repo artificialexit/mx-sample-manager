@@ -17,7 +17,28 @@ function listViewModel() {
         $modal.load('/processing/view/' + row.id(), '', function() {
             $modal.modal();
         });        
-    }
+    };
+
+    self.retrigger = function(dataset) {
+        $modal.modal('loading');
+
+        $modal.load('/processing/retrigger/' + dataset.id(), '', function() {
+            $modal.modal();
+        });
+    };
+
+    self.retriggerSubmit = function(dataset) {
+        $.post('/processing/retrigger/submit', $('form#retrigger_form').serialize(), function(data) {
+           $modal.modal('loading')
+                 .find('.modal-body')
+                 .prepend('<div class="alert alert-success fade in">' +
+                          'Submitted!<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                          '</div>');
+            setTimeout(function() {
+                $modal.modal('hide');
+            }, 2000);
+        }, 'json');
+    };
 }
 
 function resultViewModel(data) {
