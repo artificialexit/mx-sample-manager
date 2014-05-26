@@ -37,7 +37,14 @@ function listViewModel() {
             setTimeout(function() {
                 $modal.modal('hide');
             }, 2000);
-        }, 'json');
+        }, 'json')
+         .fail(function() {
+            $modal.modal('loading')
+                 .find('.modal-body')
+                 .prepend('<div class="alert alert-error fade in">' +
+                          'Failed to submit for reprocessing!<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                          '</div>');
+        });
     };
 }
 
