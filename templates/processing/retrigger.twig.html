@@ -37,6 +37,17 @@
           <td><input type="text" name="last_frame" placeholder="{{ item.no_frames }}"></td>
         </tr>
 
+        <tr>
+          <td>Low Res (cut off):</td>
+          <td></td>
+          <td><input type="text" name="low_resolution" placeholder="50"></td>
+        </tr>
+        <tr>
+          <td>High Res (cut-off):</td>
+          <td>{{ item.resolution }}</td>
+          <td><input type="text" name="high_resolution" placeholder="0"></td>
+        </tr>
+
       </tbody>
     </table>
     </form>
